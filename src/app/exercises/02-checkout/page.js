@@ -9,22 +9,21 @@ import "./styles.css";
 import { set } from "date-fns";
 
 function CheckoutExercise() {
-  const [items, dispatch] = React.useReducer(reducer, []);
-  const [isLoading, setIsLoading] = React.useState(true);
-  
-  React.useEffect(() => {
+	const [items, dispatch] = React.useReducer(reducer, []);
+	const [isLoading, setIsLoading] = React.useState(true);
+
+	React.useEffect(() => {
 		const savedItems = window.localStorage.getItem("cart-items");
 
-		if (savedItems === null) {
-			return;
-		}
+		if (savedItems !== null) {
+			dispatch({
+				type: "load-items",
+				items: JSON.parse(savedItems),
+			});
 
-    dispatch({
-      type: 'load-items',
-      items: JSON.parse(savedItems),
-    });
-    setIsLoading(false);
-  }, [])
+			setIsLoading(false);
+		}
+	}, []);
 
 	React.useEffect(() => {
 		window.localStorage.setItem("cart-items", JSON.stringify(items));
@@ -50,8 +49,8 @@ function CheckoutExercise() {
 					))}
 				</div>
 
-        <CheckoutFlow
-          loading={isLoading}
+				<CheckoutFlow
+					loading={isLoading}
 					items={items}
 					taxRate={0.15}
 					handleDeleteItem={(item) =>
